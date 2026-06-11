@@ -6,6 +6,7 @@ import acetomartina.entities.Product;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,32 +71,41 @@ public class Application {
                                 )
                         );
 
+        System.out.println();
         System.out.println("Esercizio 1:");
         ordersByCustomer.forEach((customer, orderList) -> {
             System.out.println(customer);
             orderList.forEach(System.out::println);
         });
 
+        Map<Customer, Double> totalSalesByCustomer =
+                orders.stream()
+                        .collect(Collectors.groupingBy(
+                                        Order::getCustomer,
+                                        Collectors.summingDouble(Order::calculateTotal
+                                        )
+                                )
+                        );
 
-        List<Order> babies = orders.stream()
-                .filter(order -> order.getProducts()
-                        .stream()
-                        .anyMatch(product -> product.getCategory().equals("Baby")))
-                .toList();
 
+        System.out.println();
         System.out.println("Esercizio 2: ");
-        babies.forEach(System.out::println);
+        totalSalesByCustomer.forEach((customer, total) -> {
+            System.out.println(customer);
+            System.out.println("Totale speso: " + total + "€");
+        });
 
-        List<Product> boysOrder = products.stream()
-                .filter(product -> product.getCategory().equals("Boys"))
-                .map(product -> {
-                    product.setPrice(product.getPrice() * 0.9);
-                    return product;
-                })
+        List<Product> mostExpensiveProducts = products.stream()
+                .sorted(
+                        Comparator.comparingDouble(Product::getPrice)
+                                .reversed()
+                )
+                .limit(3)
                 .toList();
 
+        System.out.println();
         System.out.println("Esercizio 3: ");
-        boysOrder.forEach(System.out::println);
+        mostExpensiveProducts.forEach(System.out::println);
 
         List<List<Product>> tier2Order = orders.stream()
                 .filter(order -> order.getCustomer().getTier() == 2 &&
