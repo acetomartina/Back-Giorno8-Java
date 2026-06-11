@@ -112,8 +112,26 @@ public class Application {
                 .average()
                 .orElse(0.0);
 
+        System.out.println();
         System.out.println("Esercizio 4: ");
         System.out.println("Media importi ordini: " + averageOrderAmount + "€");
+
+        Map<String, Double> totalByCategory =
+                products.stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        Product::getCategory,
+                                        Collectors.summingDouble(
+                                                Product::getPrice
+                                        )
+                                )
+                        );
+
+        System.out.println();
+        System.out.println("Esercizio 5: ");
+        totalByCategory.forEach((category, total) -> {
+            System.out.println(category + " -> " + total + "€");
+        });
 
 
     }
