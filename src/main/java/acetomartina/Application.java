@@ -107,16 +107,13 @@ public class Application {
         System.out.println("Esercizio 3: ");
         mostExpensiveProducts.forEach(System.out::println);
 
-        List<List<Product>> tier2Order = orders.stream()
-                .filter(order -> order.getCustomer().getTier() == 2 &&
-                        order.getOrderDate().isAfter(LocalDate.of(2021, 2, 1)) &&
-                        order.getOrderDate().isBefore(LocalDate.of(2021, 4, 1))
-                )
-                .map(order -> order.getProducts())
-                .toList();
+        double averageOrderAmount = orders.stream()
+                .mapToDouble(Order::calculateTotal)
+                .average()
+                .orElse(0.0);
 
         System.out.println("Esercizio 4: ");
-        tier2Order.forEach(productList -> productList.forEach(System.out::println));
+        System.out.println("Media importi ordini: " + averageOrderAmount + "€");
 
 
     }
